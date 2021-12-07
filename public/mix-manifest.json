@@ -1,0 +1,13 @@
+{
+    "/js/app.js": "/js/app.js",
+    "/js/products.js": "/js/products.js",
+    "/js/cart.js": "/js/cart.js",
+    "/js/login.js": "/js/login.js",
+    "/js/layout.js": "/js/layout.js",
+    "/js/banner.js": "/js/banner.js",
+    "/js/product-list.js": "/js/product-list.js",
+    "/js/modal.js": "/js/modal.js",
+    "/css/app.css": "/css/app.css",
+    "/css/bootstrap.css": "/css/bootstrap.css",
+    "/js/account.js": "/js/account.js"
+}
