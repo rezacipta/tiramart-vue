@@ -173,21 +173,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       busy: false,
-      buyerName: null,
-      buyerPhone: null,
       gift: false
     };
   },
   mounted: function mounted() {
     window.scrollTo(0, 0);
   },
-  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['address', 'cart'])), {}, {
+  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['address', 'buyer', 'cart'])), {}, {
     checkAll: {
       set: function set(checked) {
-        this.$store.state.cartProducts.forEach(function (product) {
+        this.$store.state.cart.products.forEach(function (product) {
           product.checked = checked;
         });
-        this.$store.commit('CALCULATE_CART');
+        this.$store.state.cartMethod = 'checkAll';
+        this.$store.commit('UPDATE_CART');
       },
       get: function get() {
         return this.cart.products.every(function (product) {
@@ -204,6 +203,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         if (!result) return;
         _this.busy = true;
         setTimeout(function () {
+          _this.$store.commit('FETCH_BUYER', _this.buyer);
+
           _this.busy = false;
         }, 500);
       });
@@ -632,11 +633,11 @@ var render = function () {
                       "data-vv-as": "Nama",
                     },
                     model: {
-                      value: _vm.buyerName,
+                      value: _vm.buyer.name,
                       callback: function ($$v) {
-                        _vm.buyerName = $$v
+                        _vm.$set(_vm.buyer, "name", $$v)
                       },
-                      expression: "buyerName",
+                      expression: "buyer.name",
                     },
                   }),
                   _vm._v(" "),
@@ -683,11 +684,11 @@ var render = function () {
                     },
                     on: { keypress: _vm.numberOnly },
                     model: {
-                      value: _vm.buyerPhone,
+                      value: _vm.buyer.phone,
                       callback: function ($$v) {
-                        _vm.buyerPhone = $$v
+                        _vm.$set(_vm.buyer, "phone", $$v)
                       },
-                      expression: "buyerPhone",
+                      expression: "buyer.phone",
                     },
                   }),
                   _vm._v(" "),
@@ -880,16 +881,18 @@ var render = function () {
                 !_vm.address.length
                   ? _c(
                       "div",
-                      { staticClass: "cart-buyer-input" },
+                      {
+                        staticClass: "cart-buyer-input",
+                        on: {
+                          click: function ($event) {
+                            return _vm.$router.push({ name: "address" })
+                          },
+                        },
+                      },
                       [
                         _c(
                           "div",
-                          {
-                            staticClass: "addressBtn clickable no-address",
-                            attrs: {
-                              onclick: "location.href='route('address')'",
-                            },
-                          },
+                          { staticClass: "addressBtn clickable no-address" },
                           [
                             _c("div", { staticClass: "addressBtnText" }, [
                               _vm._v("Tetapkan Alamat Pengiriman"),
@@ -898,8 +901,7 @@ var render = function () {
                             _c(
                               "svg",
                               {
-                                staticClass:
-                                  "shopping_cart_addressArrow__3QSA5",
+                                staticClass: "shopping_cart_addressArrow",
                                 attrs: {
                                   width: "20",
                                   height: "20",

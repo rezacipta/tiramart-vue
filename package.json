@@ -29,6 +29,7 @@
     "dependencies": {
         "@bachdgvn/vue-otp-input": "^1.0.8",
         "bootstrap-vue": "^2.21.2",
+        "select2": "^4.1.0-rc.0",
         "vee-validate": "^2.2.0",
         "vue-infinite-loading": "^2.4.5",
         "vue-loading-overlay": "^3.4.2",

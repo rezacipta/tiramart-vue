@@ -5,6 +5,7 @@ import api from './api.js'
 let cart = localStorage.getItem('cart');
 let token = localStorage.getItem('token');
 let address = localStorage.getItem('address');
+let buyer = localStorage.getItem('buyer');
 
 const csrf = () => {
     return api.get('/sanctum/csrf-cookie');
@@ -25,8 +26,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         address: address ? JSON.parse(address) : [],
+        buyer: buyer ? JSON.parse(buyer) : [],
         cart: cart ? JSON.parse(cart) : cartDefault(),
-        cartProducts: cart ? JSON.parse(cart).products : cartDefault().products,
         cartMethod: null,
         page: 1,
         banners: [],
@@ -36,6 +37,25 @@ export default new Vuex.Store({
         token: token ? token : null,
     },
     mutations: {
+        FETCH_ADDRESS(state, address) {
+            let listAddress = state.address.listAddress ? state.address.listAddress : [];
+            let item = null;
+
+            if (listAddress.length)
+                item = listAddress.find(item => item.id == address.id);
+
+            if (item) {
+                item = address;
+            } else {
+                listAddress.push(address);
+            }
+
+            state.address = {
+                listAddress: listAddress
+            }
+
+            localStorage.setItem('address', JSON.stringify(state.address));
+        },
         FETCH_BANNERS(state, banners) {
             state.banners = banners;
         },
@@ -53,9 +73,14 @@ export default new Vuex.Store({
 
             localStorage.setItem('token', state.token);
         },
+        FETCH_BUYER(state, data) {
+            state.buyer = data;
+
+            localStorage.setItem('buyer', JSON.stringify(state.buyer));
+        },
         DELETE_FROM_CART(state, cart) {
-            let index = state.cartProducts.findIndex(item => item.id === cart.id)
-            state.cartProducts.splice(index, 1);
+            let index = state.cart.products.findIndex(item => item.id == cart.id)
+            state.cart.products.splice(index, 1);
         },
         DELETE_USER(state) {
             state.user = null;
@@ -63,23 +88,13 @@ export default new Vuex.Store({
 
             localStorage.removeItem('token');
         },
-        CALCULATE_CART(state) {
-            Object.assign(state.cart, cartDefault());
-            state.cart.products = state.cartProducts;
-            for (let item of state.cart.products) {
-                if (item.checked) {
-                    state.cart.totalPrice += item.price * item.quantity;
-                    state.cart.totalPriceBefore += item.priceBefore * item.quantity;
-                    state.cart.totalQuantity += item.quantity;
-                    state.cart.totalWeight += item.weight * item.quantity;
-                }
-            }
-
-            localStorage.setItem('cart', JSON.stringify(state.cart));
-        },
-        UPDATE_CART(state, product) {
+        UPDATE_CART(state, product = null) {
             if (state.cartMethod == null) return;
-            let item = state.cartProducts.find(item => item.id == product.id);
+            let products = state.cart.products ? state.cart.products : [];
+            let item = null;
+
+            if (products.length && product != null)
+                item = products.find(item => item.id == product.id);
 
             if (item) {
                 if (state.cartMethod == '+') {
@@ -92,14 +107,25 @@ export default new Vuex.Store({
                 } else if (state.cartMethod == 'check') {
                     item.checked = !item.checked;
                 }
-            } else {
-                state.cartProducts.push(product);
+            } else if (product != null) {
+                products.push(product);
                 Vue.set(product, 'checked', true);
                 Vue.set(product, 'quantity', 1);
             }
 
+            Object.assign(state.cart, cartDefault());
             state.cartMethod = null;
-            this.commit('CALCULATE_CART');
+            state.cart.products = products;
+            for (let item of state.cart.products) {
+                if (item.checked) {
+                    state.cart.totalPrice += item.price * item.quantity;
+                    state.cart.totalPriceBefore += item.priceBefore * item.quantity;
+                    state.cart.totalQuantity += item.quantity;
+                    state.cart.totalWeight += item.weight * item.quantity;
+                }
+            }
+
+            localStorage.setItem('cart', JSON.stringify(state.cart));
         },
         NEXT_PAGE(state) {
             state.page = state.page + 1;
@@ -111,6 +137,9 @@ export default new Vuex.Store({
     getters: {
         address: state => {
             return state.address;
+        },
+        buyer: state => {
+            return state.buyer;
         },
         banners: state => {
             return state.banners;
@@ -129,6 +158,13 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        async fetchAddress({ commit }) {
+            return api.get('/api/address').then(res => {
+                commit('FETCH_ADDRESS', res.data);
+            }).catch(err => {
+                console.log(err);
+            });
+        },
         async fetchBanners({ commit }) {
             return api.get('/api/banner').then(res => {
                 commit('FETCH_BANNERS', res.data);
@@ -167,6 +203,7 @@ export default new Vuex.Store({
             return new Promise((resolve, reject) => {
                 api.post('/api/login', payload).then(res => {
                     commit('FETCH_USER', res.data);
+                    commit('FETCH_BUYER', res.data.user);
                     resolve(res);
                 }).catch(err => {
                     reject(err);
@@ -200,6 +237,18 @@ export default new Vuex.Store({
             await csrf();
             return new Promise((resolve, reject) => {
                 api.post('/api/send/otp', payload).then(res => {
+                    resolve(res);
+                }).catch(err => {
+                    reject(err);
+                    console.log(err);
+                });
+            });
+        },
+        async saveAddress({ commit }, payload) {
+            await csrf();
+            return new Promise((resolve, reject) => {
+                api.post('/api/address', payload).then(res => {
+                    commit('FETCH_ADDRESS', res.data);
                     resolve(res);
                 }).catch(err => {
                     reject(err);

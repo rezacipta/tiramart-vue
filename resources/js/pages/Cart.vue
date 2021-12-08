@@ -64,12 +64,12 @@
                     <div class="cardBody">
                         <div class="cart-buyer-input">
                             <label class="cart-label" for="form-name">Nama Lengkap</label>
-                            <b-form-input name="name" class="form-control" v-model="buyerName" v-validate="{ required: true }" :state="validateState('name')" data-vv-as="Nama"/>
+                            <b-form-input name="name" class="form-control" v-model="buyer.name" v-validate="{ required: true }" :state="validateState('name')" data-vv-as="Nama"/>
                             <b-form-invalid-feedback>{{ veeErrors.first('name') }}</b-form-invalid-feedback>
                         </div>
                         <div class="cart-buyer-input">
                             <label class="cart-label" for="form-phoneNumber">Nomor HP (WhatsApp)</label>
-                            <b-form-input name="phone" type="number" @keypress="numberOnly" v-model="buyerPhone" v-validate="{ required: true, min:10, max:13, regex:/(08)[0-9]{8}/ }" :state="validateState('phone')" data-vv-as="Nomor HP (Whatsapp)"/>
+                            <b-form-input name="phone" type="number" @keypress="numberOnly" v-model="buyer.phone" v-validate="{ required: true, min:10, max:13, regex:/(08)[0-9]{8}/ }" :state="validateState('phone')" data-vv-as="Nomor HP (Whatsapp)"/>
                             <b-form-invalid-feedback>{{ veeErrors.first('phone') }}</b-form-invalid-feedback>
                         </div>
                     </div>
@@ -122,10 +122,10 @@
                                     <div class="invalid-feedback">Alamat Pengiriman harus diisi</div>
                                 </div>
                             </div>
-                            <div class="cart-buyer-input" v-if="!address.length">
-                                <div onclick="location.href='route('address')'" class="addressBtn clickable no-address">
+                            <div class="cart-buyer-input" v-if="!address.length" @click="$router.push({ name: 'address' })">
+                                <div class="addressBtn clickable no-address">
                                     <div class="addressBtnText">Tetapkan Alamat Pengiriman</div>
-                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="shopping_cart_addressArrow__3QSA5">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="shopping_cart_addressArrow">
                                         <path d="M1.875 10H18.75" stroke="#2A960C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                         <path d="M7.5 3.125L1.25 10L7.5 16.875" stroke="#2A960C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
@@ -154,8 +154,6 @@ export default {
     data() {
         return {
             busy: false,
-            buyerName: null,
-            buyerPhone: null,
             gift: false,
         }
     },
@@ -165,14 +163,16 @@ export default {
     computed: {
         ...mapGetters([
             'address',
+            'buyer',
             'cart'
         ]),
         checkAll: {
             set(checked) {
-                this.$store.state.cartProducts.forEach(function (product) {
+                this.$store.state.cart.products.forEach(function (product) {
                     product.checked = checked;
                 });
-                this.$store.commit('CALCULATE_CART');
+                this.$store.state.cartMethod = 'checkAll';
+                this.$store.commit('UPDATE_CART');
             },
             get() {
                 return this.cart.products.every(function (product) {
@@ -187,6 +187,7 @@ export default {
                 if (!result) return;
                 this.busy = true;
                 setTimeout(() => {
+                    this.$store.commit('FETCH_BUYER', this.buyer);
                     this.busy = false;
                 }, 500)
             })

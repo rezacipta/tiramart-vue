@@ -5,8 +5,7 @@ Vue.use(VueRouter);
 
 export const router = new VueRouter({
     mode: 'history',
-    routes: [
-        {
+    routes: [{
             path: '*',
             redirect: '/products'
         },
@@ -37,6 +36,18 @@ export const router = new VueRouter({
             },
             component: () =>
                 import ( /* webpackChunkName: "cart" */ './pages/Cart.vue')
+        },
+        {
+            path: '/address',
+            name: 'address',
+            meta: {
+                auth: false,
+                header: true,
+                footer: false,
+                title: 'Tentukan Alamat Pengiriman',
+            },
+            component: () =>
+                import ( /* webpackChunkName: "address" */ './pages/Address.vue')
         },
         {
             path: '/help',

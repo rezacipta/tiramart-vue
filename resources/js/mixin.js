@@ -1,37 +1,6 @@
 import Vue from 'vue'
 
 Vue.mixin({
-    computed: {
-        // calculate cart
-        totalQuantity() {
-            let totalQuantity = 0;
-            for (let item of this.$store.state.cart)
-                totalQuantity += item.quantity;
-
-            return totalQuantity;
-        },
-        totalPrice() {
-            let totalPrice = 0;
-            for (let item of this.$store.state.cart)
-                totalPrice += item.price * item.quantity;
-
-            return totalPrice;
-        },
-        totalPriceBefore() {
-            let totalPriceBefore = 0;
-            for (let item of this.$store.state.cart)
-                totalPriceBefore += item.priceBefore * item.quantity;
-
-            return totalPriceBefore;
-        },
-        totalWeight() {
-            let totalWeight = 0;
-            for (let item of this.$store.state.cart)
-                totalWeight += item.weight * item.quantity;
-
-            return totalWeight;
-        }
-    },
     methods: {
         // cart helper
         productCart(id) {

@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Province extends Model
 {
-    protected $with = ['cities.subdistricts'];
+    // protected $with = ['cities.subdistricts'];
 
-    public function cities() 
+    public function cities()
     {
         return $this->hasMany(City::class);
     }

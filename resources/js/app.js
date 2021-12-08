@@ -41,6 +41,7 @@ Vue.use(VueLoading);
 Vue.use(BootstrapVue);
 
 Vue.component('app', require('./layouts/App.vue').default);
+// Vue.component('select2', require('./components/Select2.vue').default);
 Vue.component('v-otp-input', otp);
 
 const app = new Vue({

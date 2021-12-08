@@ -1666,7 +1666,7 @@ input[type=number] {
     text-transform: uppercase
 }
 
-.shopping_cart_addressArrow__3QSA5 {
+.shopping_cart_addressArrow {
     width: 25px;
     height: 25px;
     color: #2a960c;
@@ -1848,7 +1848,7 @@ input[type=number] {
 }
 
 @media only screen and (max-width:480px) {
-    .shopping_cart_addressArrow__3QSA5 {
+    .shopping_cart_addressArrow {
         width: 20px;
         height: 20px
     }
@@ -4703,7 +4703,6 @@ input[type=number] {
         margin-right: 5px
     }
 }
-
 .products_productNote__2NosL {
     font-size: 12px;
     color: #797979

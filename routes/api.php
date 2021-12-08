@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CashbackController;
@@ -33,3 +34,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/check/login', [AuthController::class, 'checkLogin']);
 Route::post('/check/otp', [AuthController::class, 'checkOtp']);
 Route::post('/send/otp', [AuthController::class, 'sendOtp']);
+Route::get('/province', [AddressController::class, 'province']);
+Route::get('/city/{id}', [AddressController::class, 'city']);
+Route::get('/subdistrict/{id}', [AddressController::class, 'subdistrict']);
+Route::get('/postalcode/{id}', [AddressController::class, 'postalcode']);
+Route::post('/address', [AddressController::class, 'store']);
