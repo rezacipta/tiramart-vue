@@ -26,14 +26,15 @@ class CashbackController extends ApiController
         $year = $request->year ? $request->year : $year;
 
         $getCommission = Commission::where('SCM_REP_EPC', $request->user()->code)
-            ->whereRaw('substr(SCM_PERIODE,1,4) = ?', $year)
+            ->where('SCM_THN_COM', $year)
             ->select(
                 DB::raw('sum(SCM_OTHER_COM) as other'),
                 DB::raw('sum(SCM_PR_CB) as cashback'),
                 'SCM_PERIODE as periode'
             )->groupBy('periode')->get();
 
-        $getCashback = CommissionSlip::where('rp_rep_id', $request->user()->code)->where('rp_period_year', $year)
+        $getCashback = CommissionSlip::where('rp_rep_id', $request->user()->code)
+            ->where('rp_period_year', $year)
             ->join('market_places', 'market_places.id', '=', 'tbl_slip_commission.marketplace')
             ->select(
                 'paid',
@@ -103,7 +104,9 @@ class CashbackController extends ApiController
 
     public function pdf(Request $request)
     {
-        $data = CommissionSlip::where('rp_rep_id', $request->user()->code)->where('rp_period', $request->periode)->where('paid', 'Y')
+        $data = CommissionSlip::where('rp_rep_id', $request->user()->code)
+            ->where('rp_period', $request->periode)
+            ->where('paid', 'Y')
             ->join('market_places', 'market_places.id', '=', 'tbl_slip_commission.marketplace')
             ->select('tbl_slip_commission.*', 'market_places.label as mp')
             ->orderBy('rp_date_paid')->get();
@@ -139,7 +142,8 @@ class CashbackController extends ApiController
 
     public function excel(Request $request)
     {
-        $commission = CommissionSlip::where('rp_rep_id', $request->user()->code)->where('rp_period', $request->periode)
+        $commission = CommissionSlip::where('rp_rep_id', $request->user()->code)
+            ->where('rp_period', $request->periode)
             ->join('market_places', 'market_places.id', '=', 'tbl_slip_commission.marketplace')
             ->select('tbl_slip_commission.*', 'market_places.label as mp')
             ->orderBy('rp_date_paid')->get();

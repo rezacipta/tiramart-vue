@@ -42,15 +42,6 @@ class AuthController extends ApiController
                 }
             } else {
                 $otp = Otp::sendOtp($request->phone);
-                // $otp = [
-                //     'otp' => true,
-                //     'message' => 'OTP berhasil dikirim.'
-                // ];
-
-                // $otp = [
-                //     'otp' => false,
-                //     'message' => 'OTP gagal dikirim.'
-                // ];
 
                 if (!$otp['otp'])
                     return $this->respondError($otp['message']);
@@ -82,15 +73,6 @@ class AuthController extends ApiController
         ]);
 
         $otp = Otp::sendOtp($request->phone);
-        // $otp = [
-        //     'otp' => true,
-        //     'message' => 'OTP berhasil dikirim.'
-        // ];
-
-        // $otp = [
-        //     'otp' => false,
-        //     'message' => 'OTP gagal dikirim.'
-        // ];
 
         if (!$otp['otp'])
             return $this->respondError($otp['message']);
@@ -145,7 +127,7 @@ class AuthController extends ApiController
 
         $data = [
             'token' => $token,
-            'user' => $customer
+            'user' => new CustomerResource($customer)
         ];
 
         return $this->respondWithSuccess($data);
