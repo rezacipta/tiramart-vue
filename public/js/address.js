@@ -29,6 +29,8 @@ __webpack_require__.r(__webpack_exports__);
       data: this.options
     }).val(this.value).trigger('change').on('change', function () {
       vm.$emit('input', this.value);
+    }).on('select2:open', function () {
+      document.querySelector('.select2-search__field').focus();
     });
   },
   watch: {

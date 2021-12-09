@@ -22,6 +22,9 @@ export default {
         .trigger('change')
         .on('change', function() {
             vm.$emit('input', this.value);
+        })
+        .on('select2:open', function() {
+            document.querySelector('.select2-search__field').focus();
         });
     },
     watch: {
