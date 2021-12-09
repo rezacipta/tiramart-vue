@@ -165,8 +165,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'Cart',
@@ -203,9 +201,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         if (!result) return;
         _this.busy = true;
         setTimeout(function () {
+          _this.busy = false;
+
           _this.$store.commit('FETCH_BUYER', _this.buyer);
 
-          _this.busy = false;
+          if (_this.cart.totalQuantity == 0) _this.$router.push({
+            name: 'products'
+          });
         }, 500);
       });
     }
@@ -803,29 +805,45 @@ var render = function () {
                     [_vm._v("Alamat Pengiriman")]
                   ),
                   _vm._v(" "),
-                  _vm.address.length
+                  _vm.address.listAddress.length
                     ? _c(
                         "div",
                         {
                           staticClass: "editAddressBtn clickable",
                           attrs: { role: "button" },
+                          on: {
+                            click: function ($event) {
+                              return _vm.$router.push({ name: "address.list" })
+                            },
+                          },
                         },
                         [_vm._v("Pilih Alamat Lain")]
                       )
                     : _vm._e(),
                 ]),
                 _vm._v(" "),
-                _vm.address.length
+                _vm.address.listAddress.length
                   ? _c("div", { staticClass: "addressCard" }, [
                       _c("div", { staticClass: "nameData" }, [
-                        _vm._v(_vm._s(_vm.address.name)),
+                        _vm._v(
+                          _vm._s(
+                            _vm.address.listAddress[_vm.address.indexSelected]
+                              .name
+                          )
+                        ),
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "recipientData" }, [
                         _vm._v(
-                          _vm._s(_vm.address.recipient_name) +
+                          _vm._s(
+                            _vm.address.listAddress[_vm.address.indexSelected]
+                              .recipientName
+                          ) +
                             " · " +
-                            _vm._s(_vm.address.phone)
+                            _vm._s(
+                              _vm.address.listAddress[_vm.address.indexSelected]
+                                .recipientPhone
+                            )
                         ),
                       ]),
                       _vm._v(" "),
@@ -834,7 +852,15 @@ var render = function () {
                           _c(
                             "div",
                             { staticClass: "shopping_cart_fullAddressField" },
-                            [_vm._v(_vm._s(_vm.address.address))]
+                            [
+                              _vm._v(
+                                _vm._s(
+                                  _vm.address.listAddress[
+                                    _vm.address.indexSelected
+                                  ].fullAddress
+                                )
+                              ),
+                            ]
                           ),
                           _vm._v(" "),
                           _c(
@@ -844,11 +870,23 @@ var render = function () {
                             },
                             [
                               _vm._v(
-                                _vm._s(_vm.address.subdistrict.name) +
+                                _vm._s(
+                                  _vm.address.listAddress[
+                                    _vm.address.indexSelected
+                                  ].subdistrict
+                                ) +
                                   ", " +
-                                  _vm._s(_vm.address.city.name) +
+                                  _vm._s(
+                                    _vm.address.listAddress[
+                                      _vm.address.indexSelected
+                                    ].city
+                                  ) +
                                   ", " +
-                                  _vm._s(_vm.address.province.name)
+                                  _vm._s(
+                                    _vm.address.listAddress[
+                                      _vm.address.indexSelected
+                                    ].province
+                                  )
                               ),
                             ]
                           ),
@@ -856,29 +894,22 @@ var render = function () {
                           _c(
                             "div",
                             { staticClass: "shopping_cart_detailAddress" },
-                            [_vm._v(_vm._s(_vm.address.detail))]
+                            [
+                              _vm._v(
+                                _vm._s(
+                                  _vm.address.listAddress[
+                                    _vm.address.indexSelected
+                                  ].detail
+                                )
+                              ),
+                            ]
                           ),
-                        ]),
-                        _vm._v(" "),
-                        _c("input", {
-                          staticClass: "nativeRadioButton",
-                          attrs: {
-                            type: "radio",
-                            name: "address",
-                            value: "$address->id",
-                            required: "",
-                            checked: "",
-                          },
-                        }),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "invalid-feedback" }, [
-                          _vm._v("Alamat Pengiriman harus diisi"),
                         ]),
                       ]),
                     ])
                   : _vm._e(),
                 _vm._v(" "),
-                !_vm.address.length
+                !_vm.address.listAddress.length
                   ? _c(
                       "div",
                       {
@@ -950,11 +981,19 @@ var render = function () {
                             "data-vv-as": "Alamat pengiriman",
                           },
                           model: {
-                            value: _vm.address.address,
+                            value:
+                              _vm.address.listAddress[
+                                _vm.address.indexSelected
+                              ],
                             callback: function ($$v) {
-                              _vm.$set(_vm.address, "address", $$v)
+                              _vm.$set(
+                                _vm.address.listAddress,
+                                _vm.address.indexSelected,
+                                $$v
+                              )
                             },
-                            expression: "address.address",
+                            expression:
+                              "address.listAddress[address.indexSelected]",
                           },
                         }),
                         _vm._v(" "),

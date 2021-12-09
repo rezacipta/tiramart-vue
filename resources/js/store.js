@@ -11,6 +11,13 @@ const csrf = () => {
     return api.get('/sanctum/csrf-cookie');
 }
 
+const addressDefault = () => {
+    return {
+        indexSelected: 0,
+        listAddress: [],
+    }
+}
+
 const cartDefault = () => {
     return {
         products: [],
@@ -25,7 +32,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        address: address ? JSON.parse(address) : [],
+        address: address ? JSON.parse(address) : addressDefault(),
         buyer: buyer ? JSON.parse(buyer) : [],
         cart: cart ? JSON.parse(cart) : cartDefault(),
         cartMethod: null,
@@ -51,6 +58,7 @@ export default new Vuex.Store({
             }
 
             state.address = {
+                indexSelected: listAddress.length - 1,
                 listAddress: listAddress
             }
 

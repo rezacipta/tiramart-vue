@@ -107,22 +107,20 @@
                         <section class="deliveryInfoSection">
                             <div class="cart-title-section">
                                 <span class="cart-label-section" for="form-fullAddress">Alamat Pengiriman</span>
-                                <div class="editAddressBtn clickable" role="button" v-if="address.length">Pilih Alamat Lain</div>
+                                <div class="editAddressBtn clickable" role="button" v-if="address.listAddress.length" @click="$router.push({ name: 'address.list' })">Pilih Alamat Lain</div>
                             </div>
-                            <div class="addressCard" v-if="address.length">
-                                <div class="nameData">{{ address.name }}</div>
-                                <div class="recipientData">{{ address.recipient_name }} · {{ address.phone }}</div>
+                            <div class="addressCard" v-if="address.listAddress.length">
+                                <div class="nameData">{{ address.listAddress[address.indexSelected].name }}</div>
+                                <div class="recipientData">{{ address.listAddress[address.indexSelected].recipientName }} · {{ address.listAddress[address.indexSelected].recipientPhone }}</div>
                                 <div class="cart-buyer-input">
                                     <div class="d-flex flex-column">
-                                        <div class="shopping_cart_fullAddressField">{{ address.address }}</div>
-                                        <div class="shopping_cart_districtRegencyField">{{ address.subdistrict.name }}, {{ address.city.name }}, {{ address.province.name }}</div>
-                                        <div class="shopping_cart_detailAddress">{{ address.detail }}</div>
+                                        <div class="shopping_cart_fullAddressField">{{ address.listAddress[address.indexSelected].fullAddress }}</div>
+                                        <div class="shopping_cart_districtRegencyField">{{ address.listAddress[address.indexSelected].subdistrict }}, {{ address.listAddress[address.indexSelected].city }}, {{ address.listAddress[address.indexSelected].province }}</div>
+                                        <div class="shopping_cart_detailAddress">{{ address.listAddress[address.indexSelected].detail }}</div>
                                     </div>
-                                    <input type="radio" name="address" class="nativeRadioButton" value="$address->id" required checked>
-                                    <div class="invalid-feedback">Alamat Pengiriman harus diisi</div>
                                 </div>
                             </div>
-                            <div class="cart-buyer-input" v-if="!address.length" @click="$router.push({ name: 'address' })">
+                            <div class="cart-buyer-input" v-if="!address.listAddress.length" @click="$router.push({ name: 'address' })">
                                 <div class="addressBtn clickable no-address">
                                     <div class="addressBtnText">Tetapkan Alamat Pengiriman</div>
                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="shopping_cart_addressArrow">
@@ -130,7 +128,7 @@
                                         <path d="M7.5 3.125L1.25 10L7.5 16.875" stroke="#2A960C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </div>
-                                <b-form-input name="address" style="display: none" v-model="address.address" v-validate="{ required: true }" :state="validateState('address')" data-vv-as="Alamat pengiriman"/>
+                                <b-form-input name="address" style="display: none" v-model="address.listAddress[address.indexSelected]" v-validate="{ required: true }" :state="validateState('address')" data-vv-as="Alamat pengiriman"/>
                                 <b-form-invalid-feedback>{{ veeErrors.first('address') }}</b-form-invalid-feedback>
                             </div>
                         </section>
@@ -187,8 +185,9 @@ export default {
                 if (!result) return;
                 this.busy = true;
                 setTimeout(() => {
-                    this.$store.commit('FETCH_BUYER', this.buyer);
                     this.busy = false;
+                    this.$store.commit('FETCH_BUYER', this.buyer);
+                    if (this.cart.totalQuantity == 0) this.$router.push({name:'products'})
                 }, 500)
             })
         }
