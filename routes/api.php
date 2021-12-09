@@ -39,3 +39,4 @@ Route::get('/city/{id}', [AddressController::class, 'city']);
 Route::get('/subdistrict/{id}', [AddressController::class, 'subdistrict']);
 Route::get('/postalcode/{id}', [AddressController::class, 'postalcode']);
 Route::post('/address', [AddressController::class, 'store']);
+Route::delete('/address/{id}', [AddressController::class, 'destroy']);

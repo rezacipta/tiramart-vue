@@ -11,7 +11,7 @@
                     </div>
                     <div class="AddressPage_inputDiv" style="margin-top: 20px;">
                         <div class="AddressPage_inputTitle">Nomor HP (WhatsApp)&nbsp;<span class="AddressPage_req">*</span></div>
-                        <b-form-input name="recipientPhone" class="form-control" type="number" @keypress="numberOnly" v-model="recipientPhone" v-validate="{ required: true, min:10, max:13, regex:/(08)[0-9]{8}/ }" :state="validateState('recipientPhone')" data-vv-as="Nomor penerima"/>
+                        <b-form-input name="recipientPhone" class="form-control" @keypress="numberOnly" v-model="recipientPhone" v-validate="{ required: true, min:10, max:13, regex:/(08)[0-9]{8}/ }" :state="validateState('recipientPhone')" data-vv-as="Nomor penerima"/>
                         <b-form-invalid-feedback>{{ veeErrors.first('recipientPhone') }}</b-form-invalid-feedback>
                     </div>
                 </div>
@@ -85,6 +85,7 @@ export default {
     data() {
         return {
             busy: false,
+            id: null,
             recipientName: null,
             recipientPhone: null,
             province: null,
@@ -98,6 +99,7 @@ export default {
             optionsProvince: [],
             optionsCity: [],
             optionsSubdistrict: [],
+            editAddress: this.$store.state.address.listAddress[this.$store.state.address.indexSelected]
         }
     },
     created() {
@@ -105,6 +107,18 @@ export default {
     },
     mounted() {
         window.scrollTo(0, 0);
+
+        if (this.$store.state.editAddress) {
+            setTimeout(() => {
+                this.id = this.editAddress.id;
+                this.recipientName = this.editAddress.recipientName;
+                this.recipientPhone = this.editAddress.recipientPhone;
+                this.fullAddress = this.editAddress.fullAddress;
+                this.detail = this.editAddress.detail;
+                this.name = this.editAddress.name;
+                this.isMain = this.editAddress.isMain;
+            }, 500)
+        }
     },
     watch: {
         province: function(id) {
@@ -127,6 +141,12 @@ export default {
         fetchProvince() {
             api.get('/api/province').then(res => {
                 this.optionsProvince = res.data;
+
+                if (this.$store.state.editAddress) {
+                    setTimeout(() => {
+                        this.province = this.editAddress.provinceId
+                    }, 100)
+                }
             }).catch(err => {
                 console.log(err);
             });
@@ -134,6 +154,12 @@ export default {
         fetchCity(id) {
             api.get('/api/city/' + id).then(res => {
                 this.optionsCity = res.data;
+
+                if (this.$store.state.editAddress) {
+                    setTimeout(() => {
+                        this.city = this.editAddress.cityId
+                    }, 100)
+                }
             }).catch(err => {
                 console.log(err);
             });
@@ -141,6 +167,13 @@ export default {
         fetchSubdistrict(id) {
             api.get('/api/subdistrict/' + id).then(res => {
                 this.optionsSubdistrict = res.data;
+
+                if (this.$store.state.editAddress) {
+                    setTimeout(() => {
+                        this.subdistrict = this.editAddress.subdistrictId
+                        this.postalcode = this.editAddress.postalcode
+                    }, 100)
+                }
             }).catch(err => {
                 console.log(err);
             });
@@ -151,6 +184,7 @@ export default {
                 this.busy = true;
                 setTimeout(() => {
                     this.$store.dispatch('saveAddress', {
+                        id: this.id,
                         recipientName: this.recipientName,
                         recipientPhone: this.recipientPhone,
                         province: this.province,
@@ -162,9 +196,12 @@ export default {
                         name: this.name,
                         isMain: this.isMain,
                     }).then(res => {
+                        console.log(res);
                         this.pushToast('success', 'Alamat berhasil disimpan.');
+                        this.$router.push({ name: 'address.list' })
                     }).catch(err => {
                         console.log(err);
+                        this.pushToast('danger', err.data.error || 'Alamat gagal disimpan.');
                     }).finally(res => {
                         this.busy = false;
                     });

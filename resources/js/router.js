@@ -50,6 +50,18 @@ export const router = new VueRouter({
                 import ( /* webpackChunkName: "address" */ './pages/Address.vue')
         },
         {
+            path: '/address/list',
+            name: 'address.list',
+            meta: {
+                auth: false,
+                header: true,
+                footer: false,
+                title: 'Pilih Alamat Pengiriman',
+            },
+            component: () =>
+                import ( /* webpackChunkName: "address" */ './pages/AddressList.vue')
+        },
+        {
             path: '/help',
             name: 'help',
             meta: {

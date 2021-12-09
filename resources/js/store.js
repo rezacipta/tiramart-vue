@@ -42,25 +42,34 @@ export default new Vuex.Store({
         product: null,
         user: [],
         token: token ? token : null,
+        editAddress: false
     },
     mutations: {
         FETCH_ADDRESS(state, address) {
             let listAddress = state.address.listAddress ? state.address.listAddress : [];
             let item = null;
+            let index = null;
 
-            if (listAddress.length)
+            if (listAddress.length) {
                 item = listAddress.find(item => item.id == address.id);
+                index = listAddress.findIndex(item => item.id == address.id);
+            }
 
-            if (item) {
-                item = address;
+            if (item && index != null) {
+                listAddress[index] = address;
             } else {
                 listAddress.push(address);
             }
 
-            state.address = {
-                indexSelected: listAddress.length - 1,
-                listAddress: listAddress
+            if (address.isMain) {
+                for (let item of listAddress) {
+                    if (item.id != address.id) {
+                        item.isMain = false;
+                    }
+                }
             }
+
+            state.address.listAddress = listAddress
 
             localStorage.setItem('address', JSON.stringify(state.address));
         },

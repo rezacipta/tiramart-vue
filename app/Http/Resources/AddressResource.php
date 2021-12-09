@@ -23,7 +23,7 @@ class AddressResource extends JsonResource
             'postalcode' => $this->subdistrict->postal_code,
             'detail' => $this->detail,
             'isMain' => $this->is_main ? true : false,
-            'customerId' => $this->customerId,
+            'customerId' => $this->customer_id,
         ];
     }
 }

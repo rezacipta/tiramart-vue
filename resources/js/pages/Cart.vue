@@ -120,7 +120,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="cart-buyer-input" v-if="!address.listAddress.length" @click="$router.push({ name: 'address' })">
+                            <div class="cart-buyer-input" v-if="!address.listAddress.length" @click="$store.state.editAddress = false, $router.push({ name: 'address' })">
                                 <div class="addressBtn clickable no-address">
                                     <div class="addressBtnText">Tetapkan Alamat Pengiriman</div>
                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="shopping_cart_addressArrow">
@@ -137,7 +137,7 @@
             </div>
         </div>
         <div class="FooterButtons_two-btn-footer-row width-control">
-            <button type="button" class="btn btn-light FooterButtons_back-btn-footer FooterButtons_two-btn-footer" @click="$router.go(-1)">Kembali</button>
+            <button type="button" class="btn btn-light FooterButtons_back-btn-footer FooterButtons_two-btn-footer" @click="$router.push({ name: 'products' })">Kembali</button>
             <b-overlay :show="busy" opacity="0.7" spinner-small spinner-variant="success" class="FooterButtons_two-btn-footer">
                 <b-button :disabled="busy" class="btn btn-primary" block variant="primary" type="submit">Selanjutnya</b-button>
             </b-overlay>

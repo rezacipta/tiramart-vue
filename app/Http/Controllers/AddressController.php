@@ -31,12 +31,14 @@ class AddressController extends ApiController
         ]);
 
         try {
-            $auth = $request->user();
+            if (auth('sanctum') && $request->isMain)
+                $update = Address::where('customer_id', auth('sanctum')->user()->id)->update(['is_main' => 0]);
 
-            if ($auth && $request->is_main)
-                $update = Address::where('customer_id', $auth->id)->update(['is_main' => 0]);
+            if (!empty($request->id))
+                $model = Address::where('id', $request->id)->first();
+            else
+                $model = new Address();
 
-            $model = new Address();
             $model->name = $request->name;
             $model->recipient_name = $request->recipientName;
             $model->phone = $request->recipientPhone;
@@ -46,10 +48,10 @@ class AddressController extends ApiController
             $model->address = $request->fullAddress;
             $model->detail = $request->detail ? $request->detail : null;
             $model->is_main = $request->isMain ? 1 : 0;
-            $model->customer_id = $auth ? $auth->id : null;
+            $model->customer_id = auth('sanctum') ? auth('sanctum')->user()->id : null;
             $model->save();
 
-            return $this->respondCreated(new AddressResource($model));
+            return $this->respondWithSuccess(new AddressResource($model));
         } catch (\Throwable $th) {
             if (env('APP_DEBUG')) {
                 return $this->respondNotFound($th);
@@ -72,9 +74,9 @@ class AddressController extends ApiController
     public function destroy($id)
     {
         try {
-            $delete = Address::where('id', $request->id)->delete();
+            $delete = Address::where('id', $id)->delete();
 
-            return $this->respondWithSuccess($delete);
+            return $this->respondWithSuccess();
         } catch (\Throwable $th) {
             if (env('APP_DEBUG')) {
                 return $this->respondNotFound($th);

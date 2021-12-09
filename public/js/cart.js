@@ -916,7 +916,8 @@ var render = function () {
                         staticClass: "cart-buyer-input",
                         on: {
                           click: function ($event) {
-                            return _vm.$router.push({ name: "address" })
+                            ;(_vm.$store.state.editAddress = false),
+                              _vm.$router.push({ name: "address" })
                           },
                         },
                       },
@@ -1022,7 +1023,7 @@ var render = function () {
               attrs: { type: "button" },
               on: {
                 click: function ($event) {
-                  return _vm.$router.go(-1)
+                  return _vm.$router.push({ name: "products" })
                 },
               },
             },

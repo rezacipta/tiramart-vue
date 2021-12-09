@@ -154,6 +154,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       busy: false,
+      id: null,
       recipientName: null,
       recipientPhone: null,
       province: null,
@@ -166,14 +167,29 @@ __webpack_require__.r(__webpack_exports__);
       isMain: false,
       optionsProvince: [],
       optionsCity: [],
-      optionsSubdistrict: []
+      optionsSubdistrict: [],
+      editAddress: this.$store.state.address.listAddress[this.$store.state.address.indexSelected]
     };
   },
   created: function created() {
     this.fetchProvince();
   },
   mounted: function mounted() {
+    var _this = this;
+
     window.scrollTo(0, 0);
+
+    if (this.$store.state.editAddress) {
+      setTimeout(function () {
+        _this.id = _this.editAddress.id;
+        _this.recipientName = _this.editAddress.recipientName;
+        _this.recipientPhone = _this.editAddress.recipientPhone;
+        _this.fullAddress = _this.editAddress.fullAddress;
+        _this.detail = _this.editAddress.detail;
+        _this.name = _this.editAddress.name;
+        _this.isMain = _this.editAddress.isMain;
+      }, 500);
+    }
   },
   watch: {
     province: function province(id) {
@@ -186,67 +202,253 @@ __webpack_require__.r(__webpack_exports__);
       this.fetchSubdistrict(id);
     },
     subdistrict: function subdistrict(id) {
-      var _this = this;
+      var _this2 = this;
 
       this.optionsSubdistrict.postalcode.find(function (item) {
-        if (item.id == id) _this.postalcode = item.postal_code;
+        if (item.id == id) _this2.postalcode = item.postal_code;
       });
     }
   },
   methods: {
     fetchProvince: function fetchProvince() {
-      var _this2 = this;
+      var _this3 = this;
 
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get('/api/province').then(function (res) {
-        _this2.optionsProvince = res.data;
+        _this3.optionsProvince = res.data;
+
+        if (_this3.$store.state.editAddress) {
+          setTimeout(function () {
+            _this3.province = _this3.editAddress.provinceId;
+          }, 100);
+        }
       })["catch"](function (err) {
         console.log(err);
       });
     },
     fetchCity: function fetchCity(id) {
-      var _this3 = this;
+      var _this4 = this;
 
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get('/api/city/' + id).then(function (res) {
-        _this3.optionsCity = res.data;
+        _this4.optionsCity = res.data;
+
+        if (_this4.$store.state.editAddress) {
+          setTimeout(function () {
+            _this4.city = _this4.editAddress.cityId;
+          }, 100);
+        }
       })["catch"](function (err) {
         console.log(err);
       });
     },
     fetchSubdistrict: function fetchSubdistrict(id) {
-      var _this4 = this;
+      var _this5 = this;
 
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get('/api/subdistrict/' + id).then(function (res) {
-        _this4.optionsSubdistrict = res.data;
+        _this5.optionsSubdistrict = res.data;
+
+        if (_this5.$store.state.editAddress) {
+          setTimeout(function () {
+            _this5.subdistrict = _this5.editAddress.subdistrictId;
+            _this5.postalcode = _this5.editAddress.postalcode;
+          }, 100);
+        }
       })["catch"](function (err) {
         console.log(err);
       });
     },
     submitAddress: function submitAddress() {
-      var _this5 = this;
+      var _this6 = this;
 
       this.$validator.validateAll().then(function (result) {
         if (!result) return;
-        _this5.busy = true;
+        _this6.busy = true;
         setTimeout(function () {
-          _this5.$store.dispatch('saveAddress', {
-            recipientName: _this5.recipientName,
-            recipientPhone: _this5.recipientPhone,
-            province: _this5.province,
-            city: _this5.city,
-            subdistrict: _this5.subdistrict,
-            postalcode: _this5.postalcode,
-            fullAddress: _this5.fullAddress,
-            detail: _this5.detail,
-            name: _this5.name,
-            isMain: _this5.isMain
+          _this6.$store.dispatch('saveAddress', {
+            id: _this6.id,
+            recipientName: _this6.recipientName,
+            recipientPhone: _this6.recipientPhone,
+            province: _this6.province,
+            city: _this6.city,
+            subdistrict: _this6.subdistrict,
+            postalcode: _this6.postalcode,
+            fullAddress: _this6.fullAddress,
+            detail: _this6.detail,
+            name: _this6.name,
+            isMain: _this6.isMain
           }).then(function (res) {
-            _this5.pushToast('success', 'Alamat berhasil disimpan.');
+            console.log(res);
+
+            _this6.pushToast('success', 'Alamat berhasil disimpan.');
+
+            _this6.$router.push({
+              name: 'address.list'
+            });
           })["catch"](function (err) {
             console.log(err);
+
+            _this6.pushToast('danger', err.data.error || 'Alamat gagal disimpan.');
           })["finally"](function (res) {
-            _this5.busy = false;
+            _this6.busy = false;
           });
         }, 500);
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/AddressList.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/AddressList.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../api.js */ "./resources/js/api.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: 'AddressList',
+  components: {
+    ConfirmDialogue: function ConfirmDialogue() {
+      return __webpack_require__.e(/*! import() | modal */ "modal").then(__webpack_require__.bind(__webpack_require__, /*! ../components/ConfirmDialogue.vue */ "./resources/js/components/ConfirmDialogue.vue"));
+    }
+  },
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapGetters)(['address'])),
+  methods: {
+    deleteAddress: function deleteAddress(id, name) {
+      var _this = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var confirm;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return _this.$refs.confirmDialogue.show({
+                  message: 'Hapus ' + name + ' dari daftar alamat ?'
+                });
+
+              case 2:
+                confirm = _context.sent;
+
+                if (confirm) {
+                  _api_js__WEBPACK_IMPORTED_MODULE_1__["default"]["delete"]('/api/address/' + id).then(function (res) {
+                    var index = _this.address.listAddress.findIndex(function (item) {
+                      return item.id == id;
+                    });
+
+                    _this.address.listAddress.splice(index, 1);
+
+                    _this.address.indexSelected = 0;
+                    localStorage.setItem('address', JSON.stringify(_this.address));
+
+                    _this.pushToast('success', 'Alamat berhasil dihapus.');
+                  })["catch"](function (err) {
+                    console.log(err);
+
+                    _this.pushToast('danger', err.data.error || 'Alamat gagal dihapus.');
+                  });
+                }
+
+              case 4:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    editAddress: function editAddress(index) {
+      this.$store.state.editAddress = true;
+      this.$store.state.address.indexSelected = index;
+      this.$router.push({
+        name: 'address'
+      });
+    },
+    submitAddress: function submitAddress() {
+      localStorage.setItem('address', JSON.stringify(this.address));
+      this.$router.push({
+        name: 'cart'
       });
     }
   }
@@ -6533,6 +6735,45 @@ component.options.__file = "resources/js/pages/Address.vue"
 
 /***/ }),
 
+/***/ "./resources/js/pages/AddressList.vue":
+/*!********************************************!*\
+  !*** ./resources/js/pages/AddressList.vue ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _AddressList_vue_vue_type_template_id_26b986b9___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AddressList.vue?vue&type=template&id=26b986b9& */ "./resources/js/pages/AddressList.vue?vue&type=template&id=26b986b9&");
+/* harmony import */ var _AddressList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddressList.vue?vue&type=script&lang=js& */ "./resources/js/pages/AddressList.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _AddressList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AddressList_vue_vue_type_template_id_26b986b9___WEBPACK_IMPORTED_MODULE_0__.render,
+  _AddressList_vue_vue_type_template_id_26b986b9___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/pages/AddressList.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/Select2.vue?vue&type=script&lang=js&":
 /*!**********************************************************************!*\
   !*** ./resources/js/components/Select2.vue?vue&type=script&lang=js& ***!
@@ -6562,6 +6803,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Address_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Address.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/Address.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Address_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/pages/AddressList.vue?vue&type=script&lang=js&":
+/*!*********************************************************************!*\
+  !*** ./resources/js/pages/AddressList.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddressList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./AddressList.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/AddressList.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddressList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
@@ -6595,6 +6852,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Address_vue_vue_type_template_id_aac2cb0a___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Address_vue_vue_type_template_id_aac2cb0a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Address.vue?vue&type=template&id=aac2cb0a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/Address.vue?vue&type=template&id=aac2cb0a&");
+
+
+/***/ }),
+
+/***/ "./resources/js/pages/AddressList.vue?vue&type=template&id=26b986b9&":
+/*!***************************************************************************!*\
+  !*** ./resources/js/pages/AddressList.vue?vue&type=template&id=26b986b9& ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddressList_vue_vue_type_template_id_26b986b9___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddressList_vue_vue_type_template_id_26b986b9___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddressList_vue_vue_type_template_id_26b986b9___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./AddressList.vue?vue&type=template&id=26b986b9& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/AddressList.vue?vue&type=template&id=26b986b9&");
 
 
 /***/ }),
@@ -6739,7 +7013,6 @@ var render = function () {
                     staticClass: "form-control",
                     attrs: {
                       name: "recipientPhone",
-                      type: "number",
                       state: _vm.validateState("recipientPhone"),
                       "data-vv-as": "Nomor penerima",
                     },
@@ -7150,6 +7423,340 @@ var render = function () {
         1
       ),
     ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/AddressList.vue?vue&type=template&id=26b986b9&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/AddressList.vue?vue&type=template&id=26b986b9& ***!
+  \******************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "b-form",
+    {
+      on: {
+        submit: function ($event) {
+          $event.preventDefault()
+          return _vm.submitAddress.apply(null, arguments)
+        },
+      },
+    },
+    [
+      _c("div", { staticClass: "AddressListPage_page" }, [
+        _c(
+          "div",
+          {
+            staticClass:
+              "AddressListPage_accountBody AddressListPage_bodySelectMode",
+          },
+          [
+            _vm.address.listAddress.length
+              ? _c("div", { staticClass: "AddressListPage_titleBody" }, [
+                  _vm._v("Pilih Alamat"),
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "AddressListPage_containerAddresses" },
+              _vm._l(_vm.address.listAddress, function (item, index) {
+                return _c(
+                  "div",
+                  {
+                    key: item.id,
+                    staticClass: "AddressListPage_addressItem clickable",
+                    class:
+                      _vm.address.indexSelected == index
+                        ? "AddressListPage_selected"
+                        : "AddressListPage_notSelected",
+                    on: {
+                      click: function ($event) {
+                        _vm.address.indexSelected = index
+                      },
+                    },
+                  },
+                  [
+                    _c(
+                      "label",
+                      {
+                        staticClass:
+                          "radio-button_radioButtonTop clickable mr-3",
+                      },
+                      [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.address.indexSelected,
+                              expression: "address.indexSelected",
+                            },
+                          ],
+                          staticClass: "radio-button_nativeRadioButton",
+                          attrs: { type: "radio", name: "selected" },
+                          domProps: {
+                            value: index,
+                            checked: _vm._q(_vm.address.indexSelected, index),
+                          },
+                          on: {
+                            change: function ($event) {
+                              return _vm.$set(
+                                _vm.address,
+                                "indexSelected",
+                                index
+                              )
+                            },
+                          },
+                        }),
+                        _vm._v(" "),
+                        _c("span", {
+                          staticClass: "radio-button_styledRadioButton",
+                        }),
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "d-flex flex-column flex-grow-1" },
+                      [
+                        _c("div", { staticClass: "d-flex flex-row" }, [
+                          _c(
+                            "div",
+                            { staticClass: "d-flex flex-column flex-grow-1" },
+                            [
+                              _c("div", { staticClass: "nameData" }, [
+                                _vm._v(_vm._s(item.name)),
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "recipientData" }, [
+                                _vm._v(
+                                  _vm._s(item.recipientName) +
+                                    " · " +
+                                    _vm._s(item.recipientPhone)
+                                ),
+                              ]),
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "AddressListPage_optionsInOrderStatus",
+                            },
+                            [
+                              _c(
+                                "b-dropdown",
+                                {
+                                  attrs: {
+                                    size: "sm",
+                                    variant: "white",
+                                    right: "",
+                                    "no-caret": "",
+                                  },
+                                  on: {
+                                    click: function ($event) {
+                                      $event.stopPropagation()
+                                    },
+                                  },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "button-content",
+                                        fn: function () {
+                                          return [
+                                            _c(
+                                              "span",
+                                              { staticClass: "editAddressBtn" },
+                                              [_vm._v("ATUR")]
+                                            ),
+                                          ]
+                                        },
+                                        proxy: true,
+                                      },
+                                    ],
+                                    null,
+                                    true
+                                  ),
+                                },
+                                [
+                                  _vm._v(" "),
+                                  _c(
+                                    "b-dropdown-item",
+                                    {
+                                      attrs: { href: "#" },
+                                      on: {
+                                        click: function ($event) {
+                                          return _vm.editAddress(index)
+                                        },
+                                      },
+                                    },
+                                    [_vm._v("Ubah Alamat")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "b-dropdown-item",
+                                    {
+                                      attrs: {
+                                        href: "#",
+                                        variant: "danger",
+                                        "data-toggle": "modal",
+                                        "data-target": "#confirm-modal",
+                                      },
+                                      on: {
+                                        click: function ($event) {
+                                          return _vm.deleteAddress(
+                                            item.id,
+                                            item.name
+                                          )
+                                        },
+                                      },
+                                    },
+                                    [_vm._v("Hapus Alamat")]
+                                  ),
+                                ],
+                                1
+                              ),
+                            ],
+                            1
+                          ),
+                        ]),
+                        _vm._v(" "),
+                        _c("div", [
+                          _c(
+                            "div",
+                            { staticClass: "AddressListPage_fullAddressData" },
+                            [_vm._v(_vm._s(item.fullAddress))]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "AddressListPage_districtRegencyData",
+                            },
+                            [
+                              _vm._v(
+                                _vm._s(item.subdistrict) +
+                                  ", " +
+                                  _vm._s(item.city) +
+                                  ", " +
+                                  _vm._s(item.province) +
+                                  ", " +
+                                  _vm._s(item.postalcode)
+                              ),
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "AddressListPage_detailAddress" },
+                            [_vm._v(_vm._s(item.detail))]
+                          ),
+                          _vm._v(" "),
+                          item.isMain
+                            ? _c("div", { staticClass: "d-flex flex-row" }, [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass:
+                                      "AddressListPage_mainAddressNote",
+                                  },
+                                  [_vm._v("ALAMAT UTAMA")]
+                                ),
+                              ])
+                            : _vm._e(),
+                        ]),
+                      ]
+                    ),
+                  ]
+                )
+              }),
+              0
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "AddressListPage_titleBody" }, [
+              _vm._v("Buat Alamat Baru"),
+            ]),
+            _vm._v(" "),
+            _c(
+              "a",
+              {
+                staticClass: "AddressListPage_greenBtn clickable",
+                on: {
+                  click: function ($event) {
+                    ;(_vm.$store.state.editAddress = false),
+                      _vm.$router.push({ name: "address" })
+                  },
+                },
+              },
+              [
+                _c("div", { staticClass: "AddressListPage_greenBtnText" }, [
+                  _vm._v("Tambahkan Alamat Baru"),
+                ]),
+                _vm._v(" "),
+                _c(
+                  "svg",
+                  {
+                    staticClass: "AddressListPage_icon",
+                    attrs: {
+                      width: "16",
+                      height: "22",
+                      viewBox: "0 0 16 22",
+                      fill: "none",
+                    },
+                  },
+                  [
+                    _c("path", {
+                      attrs: {
+                        d: "M8 0.5C3.85953 0.5 0.5 3.52391 0.5 7.25C0.5 13.25 8 21.5 8 21.5C8 21.5 15.5 13.25 15.5 7.25C15.5 3.52391 12.1405 0.5 8 0.5ZM8 11C7.40666 11 6.82664 10.8241 6.33329 10.4944C5.83994 10.1648 5.45542 9.69623 5.22836 9.14805C5.0013 8.59987 4.94189 7.99667 5.05764 7.41473C5.1734 6.83279 5.45912 6.29824 5.87868 5.87868C6.29824 5.45912 6.83279 5.1734 7.41473 5.05764C7.99667 4.94189 8.59987 5.0013 9.14805 5.22836C9.69623 5.45542 10.1648 5.83994 10.4944 6.33329C10.8241 6.82664 11 7.40666 11 8C10.9991 8.79538 10.6828 9.55794 10.1204 10.1204C9.55794 10.6828 8.79538 10.9991 8 11Z",
+                        fill: "#0C7800",
+                      },
+                    }),
+                  ]
+                ),
+              ]
+            ),
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "FooterButtons_two-btn-footer-row width-control" },
+          [
+            _c(
+              "button",
+              {
+                staticClass:
+                  "btn btn-primary FooterButtons_two-btn-footer FooterButtons_primary-color",
+                attrs: { type: "submit" },
+              },
+              [_vm._v("Pilih Alamat Pengiriman")]
+            ),
+          ]
+        ),
+      ]),
+      _vm._v(" "),
+      _c("confirm-dialogue", { ref: "confirmDialogue" }),
+    ],
+    1
   )
 }
 var staticRenderFns = []
