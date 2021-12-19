@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use F9Web\ApiResponseHelpers;
-use Illuminate\Http\Request;
 
 class ApiController extends Controller
 {
