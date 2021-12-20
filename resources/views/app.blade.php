@@ -6,6 +6,8 @@
 
         <title>Tiramart</title>
 
+        <link href="{{ asset('media/icon.png') }}" rel="icon">
+        <link href="{{ asset('media/icon.png') }}" rel="apple-touch-icon">
         <link href="{{ mix('css/bootstrap.css') }}" rel="stylesheet">
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
     </head>
