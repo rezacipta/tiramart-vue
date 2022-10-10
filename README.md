@@ -68,6 +68,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 ## Contributors
 
 Thanks to all contributors
+<br>
 <a href="https://github.com/rezacipta/tiramart-vue/graphs/contributors">
 <img src="https://contrib.rocks/image?repo=rezacipta/tiramart-vue" />
 </a>
